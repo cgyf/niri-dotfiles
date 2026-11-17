@@ -1,3 +1,7 @@
+// add input method environment variables to x11 applications
+environment {
+    XMODIFIERS "@im=fcitx"
+}
 // This config is in the KDL format: https://kdl.dev
 // "/-" comments out the following node.
 // Check the wiki for a full description of the configuration:
@@ -111,7 +115,7 @@ output "eDP-1" {
 // https://niri-wm.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 0
+    gaps 10
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -156,7 +160,7 @@ layout {
     // You can change how the focus ring looks.
     focus-ring {
         // Uncomment this line to disable the focus ring.
-        // off
+        off
 
         // How many logical pixels the ring extends out from the windows.
         width 4
@@ -195,7 +199,7 @@ layout {
     border {
         // The settings are the same as for the focus ring.
         // If you enable the border, you probably want to disable the focus ring.
-        off
+        on
 
         width 4
         active-color "#ffc87f"
@@ -262,6 +266,11 @@ layout {
     }
 }
 
+//noctalia backdrop
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
@@ -309,9 +318,14 @@ animations {
 // Find more information on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Window-Rules
 
+//global window rule. this rule is for all windows
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
 // Work around WezTerm's initial configure bug
 // by setting an empty default-column-width.
-window-rule {
+/-window-rule {
     // This regular expression is intentionally made as specific as possible,
     // since this is the default config, and we want no false positives.
     // You can get away with just app-id="wezterm" if you want.
@@ -330,7 +344,7 @@ window-rule {
 
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
-/-window-rule {
+window-rule {
     match app-id=r#"^org\.keepassxc\.KeePassXC$"#
     match app-id=r#"^org\.gnome\.World\.Secrets$"#
 
@@ -345,12 +359,7 @@ window-rule {
     draw-border-with-background false
 }
 
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
-/-window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
-}
+
 
 
 include "binds.kdl"
